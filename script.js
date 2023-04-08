@@ -22,11 +22,6 @@ function validate_n_cards(){
     create_cards(n_cards);
 }
 
-function randomize_cards(cards, n){
-    const random_cards = cards.slice(0, n);
-    
-}
-
 function comparer() { 
 	return Math.random() - 0.5; 
 }
@@ -38,20 +33,28 @@ function checkEndGame(){
     }
 }
 
-function create_cards(n) {
-    const container = document.getElementById('card_container');
-    let random_cards = front_cards.slice(0, n/2);
-    for(let j=0; j<n/2; j++){
+function randomize_cards_gifs(n){
+    let random_cards = front_cards.slice(0, n);
+    /* Duplicate gifs */
+    for(let j=0; j<n; j++){
         random_cards.push(random_cards[j]);
     }
+    /* Sort gifs */
     random_cards.sort(comparer);
+    return random_cards;
+}
+
+function create_cards(n) {
+    const container = document.getElementById('card_container');
+    const random_gifs = randomize_cards_gifs(n/2);
     for(let i=0; i<n; i++){
-        /* Creating the pair of cards*/
-        let gif = random_cards[i];
+        let gif = random_gifs[i];
+        /* Creating card element */
         const card = document.createElement('div');
         card.classList.add('card');
         card.setAttribute('data-test', 'card');
 
+        
         const inner = document.createElement('div');
         inner.classList.add('inner');
         card.appendChild(inner);
@@ -83,25 +86,32 @@ function create_cards(n) {
             n_plays++;
             const first = document.querySelector('.first');
             const second = document.querySelector('.second');
+            /* If no cards are turned up, this card is set as first and turned */
             if(first === null){
                 card.classList.add('first');
                 card.style.transform = "rotateY(180deg)";
             }
+            /* If only the first card is turned up, this card is set as second and turned */
             else if(first !== null && second === null){
+                /* The click should not be permited until both cards are checked if they maytch */
                 allow_click = false;
                 card.classList.add('second');
                 const first_img = first.querySelector('.inner .front img').getAttribute('src');
                 const card_img = card.querySelector('.inner .front img').getAttribute('src');
                 card.style.transform = "rotateY(180deg)";
+                /* Check if the cards match */
                 setTimeout(function(){
+                    /* If cards don't match: turn both cards again*/
                     if(first_img !== card_img){
                         first.style.transform = "rotateY(360deg)";
                         card.style.transform = "rotateY(360deg)";
-                    } else{
+                    } else{ /* If cards match: increase right plays count and check if game ended */
                         right_plays++;
                         checkEndGame();
                     }
+                    /* After the match is checked, we allow the clicking again */
                     allow_click = true;
+                    /* Removing the first and second classes to allow next cards to be stored*/
                     first.classList.remove('first');
                     card.classList.remove('second');
                 }, 1000);
