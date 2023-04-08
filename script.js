@@ -50,6 +50,8 @@ function create_cards(n) {
         let gif = random_cards[i];
         const card = document.createElement('div');
         card.classList.add('card');
+        card.setAttribute('data-test', 'card');
+
         const inner = document.createElement('div');
         inner.classList.add('inner');
         card.appendChild(inner);
@@ -57,6 +59,7 @@ function create_cards(n) {
         const back = document.createElement('div');
         const back_img = document.createElement('img');
         back_img.setAttribute('src', 'assets/back.png');
+        back_img.setAttribute('data-test', 'face-down-image');
         back.classList.add('back');
         back.appendChild(back_img);
         inner.appendChild(back);
@@ -64,6 +67,7 @@ function create_cards(n) {
         const front = document.createElement('div');
         const front_img = document.createElement('img');
         front_img.setAttribute('src', gif);
+        front_img.setAttribute('data-test', 'face-up-image');
         front.appendChild(front_img);
         front.classList.add('front');
         inner.appendChild(front);
